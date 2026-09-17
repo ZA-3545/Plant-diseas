@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crop-disease-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crop-disease-api
+  template:
+    metadata:
+      labels:
+        app: crop-disease-api
+    spec:
+      containers:
+      - name: crop-disease-api
+        image: crop-disease-api:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "1Gi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crop-disease-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: crop-disease-api
+  ports:
+  - port: 8000
+    targetPort: 8000
